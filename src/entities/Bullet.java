@@ -92,9 +92,24 @@ public class Bullet extends Entity {
     }
 
     public void seek(double agility, Ship target) {
-        isSeeking = true;
+        isSeeking = target instanceof Ship;
         this.agility = agility;
         this.target = target;
+    }
+
+    public double getAgility()
+    {
+        return this.agility;
+    }
+
+    public void setAgility(double agility)
+    {
+        this.agility = agility;
+    }
+
+    public Ship getTarget()
+    {
+        return this.target;
     }
 
     public void setSpeed(double speed) {

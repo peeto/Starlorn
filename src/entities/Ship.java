@@ -117,8 +117,10 @@ public class Ship extends Entity {
         }
         cooldownTimer = (int) cooling;
         for (Bullet b : applyAllUpgrades(sprites)) {
-            if (b.getSeeking())
-                b.seek(agility, getNearestTarget());
+            if (b.getSeeking()) {
+                b.seek(agility, getBestTarget());
+                //b.seek(agility, getNearestTarget());
+            }
             b.setSprites(sprites);
             spawnBullet(b);
         }
@@ -158,6 +160,10 @@ public class Ship extends Entity {
     }
 
     public Ship getNearestTarget() {
+        return world.getPlayer();
+    }
+
+    public Ship getBestTarget() {
         return world.getPlayer();
     }
 

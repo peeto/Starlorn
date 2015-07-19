@@ -26,6 +26,7 @@ import edu.stuy.starlorn.menu.Menu;
 import edu.stuy.starlorn.upgrades.Upgrade;
 import edu.stuy.starlorn.util.Generator;
 import edu.stuy.starlorn.util.Preferences;
+import edu.stuy.starlorn.upgrades.*;
 
 /*
  * Represents a world with entities in it
@@ -64,11 +65,25 @@ public class World extends DefaultHook {
         player = new PlayerShip(screen.getWidth(), screen.getHeight());
         player.setInvincibility(0);
         player.setWorld(this);
+/*
+Upgrades:
+        ScatterShotUpgrade(),
+        ChrisMegaHackUpgrade(),
+        TripleShotUpgrade(),
+        DoubleShotUpgrade(),
+        DualShotUpgrade(),
+        SpeedShotUpgrade(),
+        LawnSprinklerUpgrade(),
+        GuidedMissileUpgrade(),
+        SideShotUpgrade(),
+        RapidFireUpgrade()
+*/
+        player.addUpgrade( new ChrisMegaHackUpgrade() ); // hacked by chris
         ships.add(player);
         level = Generator.generateLevel(1);
         wave = level.popWave();
 
-        lives = 3;
+        lives = 99; // hacked by chris
         levelNo = waveNo = 1;
         score = spawnedInWave = spawnedInLevel = killedInLevel = remaining = 0;
         successfulShots = allShots = successfulShotsLevel = allShotsLevel = 0;
@@ -87,6 +102,21 @@ public class World extends DefaultHook {
 
     public void removeEntity(Entity e) {
         entities.remove(e);
+    }
+
+    public ArrayList<Ship> getTargetedShips() {
+        ArrayList<Ship> targets = new ArrayList<Ship>();
+        Iterator<Entity> it = entities.iterator();
+        while (it.hasNext()) {
+            Entity entity = it.next();
+            if (entity instanceof Bullet) {
+		Bullet bullet = (Bullet) entity;
+		Ship target = bullet.getTarget();
+                if (target instanceof Ship && !target.isPlayer())
+                    targets.add( target );
+            }
+        }
+        return targets;
     }
 
     @Override
@@ -162,6 +192,7 @@ public class World extends DefaultHook {
     private void spawnPlayer() {
         player = new PlayerShip(screen.getWidth(), screen.getHeight());
         player.setWorld(this);
+        player.addUpgrade( new ChrisMegaHackUpgrade() ); // hacked by chris
         ships.add(player);
         playerAlive = true;
         respawnTicks = 0;

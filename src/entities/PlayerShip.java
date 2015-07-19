@@ -3,12 +3,17 @@ package edu.stuy.starlorn.entities;
 import java.awt.Color;
 import java.awt.Graphics2D;
 import java.awt.geom.Rectangle2D;
+import java.util.ArrayList;
+import java.util.Set;
+import java.util.HashSet;
+import java.util.Collections;
 
 import edu.stuy.starlorn.graphics.Anchor;
 
 public class PlayerShip extends Ship {
 
     private static final int FRAMES_PER_SPRITE = 3;
+    private static final int BULLETS_PER_ENEMY = 2;
 
     private Rectangle2D.Double hitbox;
     private float hitboxAlpha;
@@ -202,6 +207,39 @@ public class PlayerShip extends Ship {
                 }
             }
         }
+        return closest;
+    }
+
+    @Override
+    public Ship getBestTarget() {
+        Ship closest = null;
+        double distance = Double.MAX_VALUE;
+        ArrayList<Ship> allships = world.getShips();
+        ArrayList<Ship> targeted = world.getTargetedShips();
+
+	// get closest non-targeted ship
+        for (Ship ship : allships) {
+            if(!targeted.contains(ship) && !ship.isPlayer()) {
+                double newDistance = Math.pow(this.getRect().x - ship.getRect().x, 2) + Math.pow(this.getRect().y - ship.getRect().y, 2) ;
+                if (newDistance < distance) {
+                    closest = ship;
+                    distance = newDistance;
+                }
+            }
+        }
+
+        if (closest != null)
+            return closest;
+
+        // if all ships are already targeted, ensure each enemy gets targeted BULLETS_PER_ENEMY times.
+        Set<Ship> unique = new HashSet<Ship>(targeted);
+        for (Ship key : unique) {
+            if ( Collections.frequency(targeted, key) <= BULLETS_PER_ENEMY) {
+                closest = key;
+                break;
+            }
+        }
+
         return closest;
     }
 

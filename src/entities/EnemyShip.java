@@ -104,6 +104,11 @@ public class EnemyShip extends Ship {
         return world.getPlayer();
     }
 
+    @Override
+    public Ship getBestTarget() {
+        return world.getPlayer();
+    }
+
     public void setPath(Path p) {
         path = p;
     }
